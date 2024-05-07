@@ -5,6 +5,7 @@
 
 | Endpoint             | Método | Descripción                              |                               
 | -------------------- | ------ | ---------------------------------------- |
+| `/orders`            | GET    | Obtener todos los pedidos                |
 | `/orders`            | POST   | Crear un nuevo pedido.                   | 
 | `/orders/{order_id}` | GET    | Obtener detalles de un pedido específico.| 
 | `/orders/{order_id}` | DELETE | Eliminar un pedido.                      | 
