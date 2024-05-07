@@ -3,12 +3,12 @@ from flask import Flask, jsonify, request
 from dotenv import load_dotenv
 from database import Database
 
-# Cargar variables de entorno desde el archivo .env
+# ------------------------------------------------------
 load_dotenv()
 
-# Configuración de la aplicación Flask
 app = Flask(__name__)
 db = Database()
+# ------------------------------------------------------
 
 # Definición del modelo de Pedido
 class Order:
