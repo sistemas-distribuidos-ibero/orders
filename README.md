@@ -24,6 +24,4 @@
 TODO
 - Modificar db a sqlAlchemy
     - C4ncino/hackaton_ibero
-- Documentar endpoints
-- .gitignore
-    - gitignore.io
+- crear tabla m m en app.py en post
