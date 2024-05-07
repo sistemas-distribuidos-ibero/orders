@@ -1,12 +1,15 @@
-# API de ordenes
+# Api de ordenes
 
-## Enpoints
+## Endpoints
 
-| Endpoint | Metodo | Descripcion |
-|------|-----| ----|
-| /orders | GET | Get all orders | 
-| /orders/<id> | GET | Get order by id | 
 
+| Endpoint             | Método | Descripción                              |                               
+| -------------------- | ------ | ---------------------------------------- |
+| `/order/{page}`      | GET    | Lista de todos los pedidos.              |
+| `/orders`            | POST   | Crear un nuevo pedido.                   | 
+| `/orders/{order_id}` | GET    | Obtener detalles de un pedido específico.| 
+| `/orders/{order_id}` | PUT    | Actualizar detalles de un pedido.        | 
+| `/orders/{order_id}` | DELETE | Eliminar un pedido.                      | 
 
 ```json
 {
