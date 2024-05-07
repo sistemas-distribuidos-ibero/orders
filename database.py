@@ -1,38 +1,35 @@
 import os
-import pymysql
+from sqlalchemy import create_engine, Column, Integer, TIMESTAMP
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
+Base = declarative_base()
+
+class Order(Base):
+    __tablename__ = 'orders'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    id_usuario = Column(Integer, nullable=False)
+    timestamp = Column(TIMESTAMP, server_default=sqlalchemy.func.now())
+    pedido_producto_id = Column(Integer)
+    id_pedido = Column(Integer)
+    id_producto = Column(Integer)
+    cantidad = Column(Integer)
 
 class Database:
     def __init__(self):
-        self.connection = pymysql.connect(host=os.getenv('MYSQL_HOST'),
-                                          user=os.getenv('MYSQL_USER'),
-                                          password=os.getenv('MYSQL_PASSWORD'),
-                                          database=os.getenv('MYSQL_DATABASE'),
-                                          cursorclass=pymysql.cursors.DictCursor)
-        self.cursor = self.connection.cursor()
-        self.cursor.execute(
-            """
-            CREATE TABLE IF NOT EXISTS orders (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                id_usuario INT NOT NULL,
-                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                pedido_producto_id INT,
-                id_pedido INT,
-                id_producto INT,
-                cantidad INT
-            )
-            """
-        )
-        self.connection.commit()
+        self.engine = create_engine(os.getenv('DATABASE_URL')) 
+        Base.metadata.create_all(self.engine)
+        Session = sessionmaker(bind=self.engine)
+        self.session = Session()
 
     def list_orders(self):
-        self.cursor.execute("SELECT * FROM orders")
-        return self.cursor.fetchall()
+        return self.session.query(Order).all()
 
     def add_order(self, id_usuario, pedido_producto_id, id_pedido, id_producto, cantidad):
-        sql = "INSERT INTO orders (id_usuario, pedido_producto_id, id_pedido, id_producto, cantidad) VALUES (%s, %s, %s, %s, %s)"
-        values = (id_usuario, pedido_producto_id, id_pedido, id_producto, cantidad)
-        self.cursor.execute(sql, values)
-        self.connection.commit()
+        new_order = Order(id_usuario=id_usuario, pedido_producto_id=pedido_producto_id, id_pedido=id_pedido, id_producto=id_producto, cantidad=cantidad)
+        self.session.add(new_order)
+        self.session.commit()
         return True
 
 
