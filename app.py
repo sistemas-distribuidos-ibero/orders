@@ -21,27 +21,24 @@ def get_orders():
 @app.route('/orders', methods=['POST'])
 def create_order():
     data = request.json
-    
-    # productos = data['productos']
-    # [{'id_producto': 56789, 'cantidad': 5}, {'id_producto': 56789, 'cantidad': 5}]
-    
     new_order_data = {
         'id_usuario': data['id_usuario'],
         'timestamp': data['timestamp'],
-        'pedido_producto': data['pedido_producto'],
-        'id_pedido': data['id_pedido'],
         'id_producto': data['id_producto'],
+        'id_pedido': data['id_pedido'],
         'cantidad': data['cantidad']
     }
+    order_id = db.add_order(new_order_data)    
 
-    # order = db.add_order(new_order_data)
+    for product_data in data['productos']:
+        product_data['order_id'] = order_id
 
-    # for producto in productos:
-    #     db.({
-    #         'id_pedido':,
-    #         'id_p': producto['id_pr']
+        db.add_order_products(
+            order_id=product_data['order_id'],
+            product_id=product_data['product_id'],
+            quantity=product_data['quantity']
+        )
 
-    #     })
 
     return jsonify({'message': 'Pedido creado correctamente'}), 201
 
