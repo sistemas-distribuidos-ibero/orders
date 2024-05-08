@@ -1,8 +1,8 @@
 import os
+from datetime import datetime
 from sqlalchemy import create_engine, Column, Integer, ForeignKey, TIMESTAMP
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
-import sqlalchemy
 
 Base = declarative_base()
 
@@ -11,7 +11,7 @@ class Order(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     id_usuario = Column(Integer, nullable=False)
-    timestamp = Column(TIMESTAMP, server_default=sqlalchemy.func.now())
+    timestamp = Column(TIMESTAMP, server_default=datetime.now)
 
     products = relationship("OrderProduct", back_populates="order")
 
@@ -35,9 +35,8 @@ class Database:
     def list_orders(self):
         return self.session.query(Order).all()
 
-    def add_order(self, id_usuario, id_pedido, id_producto, cantidad):
-        new_order = Order(id_usuario=id_usuario, id_pedido=id_pedido, id_producto=id_producto, cantidad=cantidad)
-        self.session.add(new_order)
+    def add_order(self, order):
+        self.session.add(order)
         self.session.commit()
         return True
 
@@ -45,7 +44,7 @@ class Database:
         return self.session.query(OrderProduct).all()
     
     def add_order_products(self, order_id, product_id, quantity):
-        new_order_product = OrderProduct(order_id=order_id, product_id=product_id, quantity=quantity)
-        self.session.add(new_order_product)
+        order_product = OrderProduct(order_id=order_id, product_id=product_id, quantity=quantity)
+        self.session.add(order_product)
         self.session.commit()
         return True
