@@ -1,7 +1,8 @@
 import os
-from sqlalchemy import create_engine, Column, Integer, TIMESTAMP
+from sqlalchemy import create_engine, Column, Integer, ForeignKey, TIMESTAMP
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, relationship
+import sqlalchemy
 
 Base = declarative_base()
 
@@ -11,10 +12,18 @@ class Order(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     id_usuario = Column(Integer, nullable=False)
     timestamp = Column(TIMESTAMP, server_default=sqlalchemy.func.now())
-    pedido_producto_id = Column(Integer)
-    id_pedido = Column(Integer)
-    id_producto = Column(Integer)
-    cantidad = Column(Integer)
+
+    products = relationship("OrderProduct", back_populates="order")
+
+class OrderProduct(Base):
+    __tablename__ = 'orders_products'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    order_id = Column(Integer, ForeignKey('orders.id'))
+    product_id = Column(Integer)
+    quantity = Column(Integer)
+
+    order = relationship("Order", back_populates="products")
 
 class Database:
     def __init__(self):
@@ -26,11 +35,17 @@ class Database:
     def list_orders(self):
         return self.session.query(Order).all()
 
-    def add_order(self, id_usuario, pedido_producto_id, id_pedido, id_producto, cantidad):
-        new_order = Order(id_usuario=id_usuario, pedido_producto_id=pedido_producto_id, id_pedido=id_pedido, id_producto=id_producto, cantidad=cantidad)
+    def add_order(self, id_usuario, id_pedido, id_producto, cantidad):
+        new_order = Order(id_usuario=id_usuario, id_pedido=id_pedido, id_producto=id_producto, cantidad=cantidad)
         self.session.add(new_order)
         self.session.commit()
         return True
 
-
-
+    def list_order_products(self):
+        return self.session.query(OrderProduct).all()
+    
+    def add_order_products(self, order_id, product_id, quantity):
+        new_order_product = OrderProduct(order_id=order_id, product_id=product_id, quantity=quantity)
+        self.session.add(new_order_product)
+        self.session.commit()
+        return True
