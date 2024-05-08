@@ -39,7 +39,6 @@ def create_order():
             quantity=product_data['quantity']
         )
 
-
     return jsonify({'message': 'Pedido creado correctamente'}), 201
 
 @app.route('/orders/<int:order_id>', methods=['GET'])
