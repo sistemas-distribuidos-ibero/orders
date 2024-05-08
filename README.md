@@ -24,4 +24,3 @@
 TODO
 - Modificar db a sqlAlchemy
     - C4ncino/hackaton_ibero
-- crear tabla m m en app.py en post
