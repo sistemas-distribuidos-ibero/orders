@@ -36,15 +36,17 @@ def get_orders():
 def create_order():
     data = request.json
     new_order = db.add_order(data['id_usuario'])
+    order_id = new_order.id 
 
     for product_data in data['productos']:
         db.add_order_products(
-            order_id=new_order.id,
+            order_id=order_id,
             product_id=product_data['id_producto'],
             quantity=product_data['cantidad']
         )
 
-    return jsonify({'message': 'Pedido creado correctamente'}), 201
+    return jsonify({'id orden': order_id}), 201
+
 
 @app.route('/orders/<int:order_id>', methods=['GET'])
 def get_order(order_id):
