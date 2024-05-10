@@ -11,7 +11,7 @@ class Order(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     id_usuario = Column(Integer, nullable=False)
-    timestamp = Column(TIMESTAMP, server_default=datetime.now)
+    timestamp = Column(TIMESTAMP(), default=datetime.now())
 
     products = relationship("OrderProduct", back_populates="order")
 
@@ -27,7 +27,7 @@ class OrderProduct(Base):
 
 class Database:
     def __init__(self):
-        self.engine = create_engine(os.getenv('DATABASE_URL')) 
+        self.engine = create_engine(os.getenv('DATABASE_URL'))
         Base.metadata.create_all(self.engine)
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
